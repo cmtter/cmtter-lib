@@ -1,5 +1,5 @@
 import { existsSync, readdirSync } from 'fs';
-import { join, resolve } from 'path';
+import path, { join, sep } from 'path';
 import glob from "glob";
 import pify from 'pify'
 import { merge } from 'lodash';
@@ -34,36 +34,18 @@ export function getBuildPaths(rootPath) {
   return pkgs
 }
 
-export function getUseEnvs(rootPath) {
-  const pkgs = getBuildPaths(rootPath)
-  let i = 0
-  let _envs = {}
-
-  function createGlobSrcs(src) {
-    return '**/*-env.*(ts|js)'
-  }
-
+export function getUseEnvs(rootPath, args, mode) {
   function testDefault(obj) {
     return obj.default || obj;
   }
-
-  return new Promise((resolve, reject) => {
-    pkgs.forEach(src => {
-      glob(createGlobSrcs(src.path), {
-        cwd: join(src.path, 'src'),
-        realpath: true
-      }, (erros, files) => {
-        let env = _envs[src.name] || {}
-        env = [env, ...files.map(_file => testDefault(require(_file)))].reduce((memo, v) => {
-          merge(memo, v)
-          return memo
-        }, {})
-        _envs[src.name] = env
-        if (i === pkgs.length - 1) {
-          resolve(_envs.root || _envs)
-        }
-        i++
-      })
-    })
+  const userEnvFile = getExistFile({
+    cwd: rootPath,
+    files: [`src${sep}${mode}-env.js`],
+    returnRelative: false
   })
+  const defaultEnvFile = path.resolve(__dirname, '../default-env.js')
+  return [defaultEnvFile, ...(userEnvFile ? [userEnvFile] : [])].map(_file => testDefault(require(_file))).reduce((memo, v) => {
+    merge(memo, (v instanceof Function ? (v(mode, args) || {}) : v))
+    return memo
+  }, {})
 }

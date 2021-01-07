@@ -12,7 +12,7 @@ const _pglob = pify(glob)
 // es build
 async function buildEs(files) {
   signale.await('构建es....')
-  const rollupConfigs = createRollupConfig('es', files)
+  const rollupConfigs = createRollupConfig('es', files, this)
   for (let i = 0; i < rollupConfigs.length; i++) {
     const { output, ...inputOption } = rollupConfigs[i];
     const bundle = await rollup(inputOption)
@@ -24,7 +24,7 @@ async function buildEs(files) {
 // cjs build
 async function buildLib(files) {
   signale.await('构建cjs....')
-  const rollupConfigs = createRollupConfig('cjs', files)
+  const rollupConfigs = createRollupConfig('cjs', files, this)
   for (let i = 0; i < rollupConfigs.length; i++) {
     const { output, ...inputOption } = rollupConfigs[i];
     const bundle = await rollup(inputOption)
@@ -34,8 +34,15 @@ async function buildLib(files) {
 }
 
 // umd build
-async function buildDist(file) {
-
+async function buildDist(files) {
+  signale.await('构建umd....', files)
+  const rollupConfigs = createRollupConfig('umd', files, this)
+  for (let i = 0; i < rollupConfigs.length; i++) {
+    const { output, ...inputOption } = rollupConfigs[i];
+    const bundle = await rollup(inputOption)
+    await bundle.write(output);
+    signale.success(`[umd]: ${inputOption.input}`)
+  }
 }
 
 export default async function build() {
@@ -67,7 +74,7 @@ export default async function build() {
       signale.warn('创建umd[忽略]', `因为${join(buildPath.path, 'src')}${sep}目录未检测到index.js文件`)
       continue
     }
-    await buildDist.call(this, indexFile)
+    await buildDist.call(this, [indexFile])
   }
   signale.timeEnd()
   signale.success('完成!')

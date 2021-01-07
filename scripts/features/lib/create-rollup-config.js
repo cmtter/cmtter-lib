@@ -1,6 +1,5 @@
 import autoInstall from '@rollup/plugin-auto-install'
 import nodeResolve from '@rollup/plugin-node-resolve'
-import json from '@rollup/plugin-json'
 import commonjs from '@rollup/plugin-commonjs'
 import babel from '@rollup/plugin-babel'
 import { parse, join } from 'path'
@@ -12,26 +11,44 @@ function getDir(format, input) {
     const pkgPos = urlfragments.indexOf('packages')
     dirs.push(urlfragments[pkgPos + 1])
     dirs = dirs.concat(urlfragments.slice(pkgPos + 3, urlfragments.length - 1))
+  } else {
+    const srcPos = urlfragments.indexOf('src')
+    dirs = dirs.concat(urlfragments.slice(srcPos + 1, urlfragments.length - 1))
   }
   return dirs.join('/')
 }
 
-export default function createRollupConfig(format, inputs, umdName) {
+export default function createRollupConfig(format, inputs, options) {
+  const { useEnvs } = options
   return inputs.map(input => {
     return {
       input,
       external: id => {
-        return /node_modules/.test(id)
+        // 入口 必须返回 false
+        if (id === input) {
+          return false
+        }
+        //  用户扩展优先
+        if (useEnvs.rollupExternal && useEnvs.rollupExternal instanceof Function) {
+          const r = useEnvs.rollupExternal(format, input, id)
+          if (r === true || r === false) {
+            return r
+          }
+        }
+        // 如果存在node_modules、或者非umd模式 则 返回true
+        if ((id[0] !== '.') && (/node_modules/.test(require.resolve(id))) || format !== 'umd') {
+          return true
+        }
+        return false
       },
       output: {
         format: format,
         dir: getDir(format, input),
-        ...(format !== 'umd' ? { preserveModules: true } : {}),
+        ...(format !== 'umd' ? { preserveModules: null } : {}),
         ...(format === 'cjs' ? { exports: 'named' } : {}),
-        ...(format === 'umd' ? { name: umdName } : {})
+        ...(format === 'umd' ? { name: useEnvs.umdExport, globals: useEnvs.umdGlobals } : {})
       },
       plugins: [
-        json(),
         autoInstall(),
         commonjs(),
         babel({
@@ -48,15 +65,21 @@ export default function createRollupConfig(format, inputs, umdName) {
               }
             ],
             require.resolve('@babel/preset-react'),
+            ...useEnvs.extraBabelPresets
           ],
           plugins: [
-            [
-              require.resolve('@babel/plugin-transform-runtime'),
-              {
-                useESModules: true,
-                version: require('@babel/runtime/package.json').version
-              }
-            ],
+            /**
+             * 当babelHelpers设置为bundled时, 不能使用@babel/plugin-transform-runtime插件
+             */
+            ...(format !== 'umd' ? [
+              [
+                require.resolve('@babel/plugin-transform-runtime'),
+                {
+                  useESModules: true,
+                  version: require('@babel/runtime/package.json').version
+                }
+              ]
+            ] : []),
             require.resolve('babel-plugin-react-require'),
             require.resolve('@babel/plugin-syntax-dynamic-import'),
             require.resolve('@babel/plugin-proposal-export-default-from'),
@@ -65,11 +88,12 @@ export default function createRollupConfig(format, inputs, umdName) {
             require.resolve('@babel/plugin-proposal-nullish-coalescing-operator'),
             require.resolve('@babel/plugin-proposal-optional-chaining'),
             [require.resolve('@babel/plugin-proposal-decorators'), { legacy: true }],
-            [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }]
+            [require.resolve('@babel/plugin-proposal-class-properties'), { loose: true }],
+            ...useEnvs.extraBabelPlugins
           ],
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
           include: ['**/src/**/*.*(ts|js|tsx|jsx)'],
-          babelHelpers: 'runtime',
+          babelHelpers: format !== 'umd' ? 'runtime' : 'bundled',
           exclude: /\/node_modules\//,
           babelrc: false
         }),
@@ -80,6 +104,7 @@ export default function createRollupConfig(format, inputs, umdName) {
           // 必须指定解析范围，否则他会将 npm node_module也解析冲 相对路径模式
           resolveOnly: ['/packages/ ** /src/ **/*.*/', '/src/ **/*.*/']
         }),
+        ...useEnvs.extraRollupPlugins
       ]
     }
   })

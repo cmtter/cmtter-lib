@@ -2,11 +2,11 @@
 require('../scripts/utils/babel-node-register')(process.cwd())
 const yParser = require('yargs-parser');
 const signale = require('signale');
-const { join } = require('path');
+const { join, sep } = require('path');
 const rimraf = require('rimraf');
 const { Service } = require('../scripts/index');
 const { COMMAND_CLIS, ERROR_MESSAGES } = require('../scripts/utils/common')
-const { getBuildPaths, getUseEnvs } = require('../scripts/utils/utils');
+const { getBuildPaths, getUseEnvs, getExistFile } = require('../scripts/utils/utils');
 const { await } = require('signale');
 
 const cwd = process.cwd()
@@ -44,15 +44,16 @@ if (!type) {
 
 signale.start(`cmtter-lib ${type}....`);
 (async () => {
-  const buildPaths = getBuildPaths(cwd)
-  const useEnvs = await getUseEnvs(cwd)
   const mode = args.mode || 'dev'
+  const buildPaths = getBuildPaths(cwd)
+  const useEnvs = await getUseEnvs(cwd, args, mode)
 
+  const pkg = require(join(cwd, 'package.json'))
   if (!buildPaths) {
     signale.fatal(ERROR_MESSAGES.ERROR_PROJECT_DIR_CLI)
     process.exit(1)
   }
-  const _s = new Service({ cwd, args, buildPaths, useEnvs, mode });
+  const _s = new Service({ cwd, args, buildPaths, useEnvs, mode, pkg: (pkg.default || pkg) });
   await _s.run(type)
 })()
 
