@@ -2,12 +2,18 @@
 require('../scripts/utils/babel-node-register')(process.cwd())
 const yParser = require('yargs-parser');
 const signale = require('signale');
+const { join } = require('path');
+const rimraf = require('rimraf');
 const { Service } = require('../scripts/index');
 const { COMMAND_CLIS, ERROR_MESSAGES } = require('../scripts/utils/common')
 const { getBuildPaths, getUseEnvs } = require('../scripts/utils/utils');
 const { await } = require('signale');
 
 const cwd = process.cwd()
+
+rimraf.sync(join(cwd, 'es'));
+rimraf.sync(join(cwd, 'lib'));
+rimraf.sync(join(cwd, 'dist'));
 
 function formRunType(_args) {
   let type
