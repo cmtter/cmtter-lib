@@ -105,3 +105,6 @@ dist
 src/
 packages/
 temp/
+lib/
+es/
+dist/
