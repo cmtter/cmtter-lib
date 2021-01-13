@@ -39,7 +39,7 @@ export default async function create({ dir }) {
   const allFiles = [...fl1, ...fl2]
   allFiles.forEach(file => {
     const tplContent = fs.readFileSync(file, 'utf-8');
-    const content = Mustache.render(tplContent, {})
+    const content = Mustache.render(tplContent, { name })
     const dest = join(projectPath, file.slice(join(__dirname, 'templates').length))
     const destSteps = parse(dest)
     if (!fs.existsSync(destSteps.dir)) {
