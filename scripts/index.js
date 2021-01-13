@@ -1,5 +1,6 @@
 import buildLib from './features/lib/build-lib'
 import createrLib from './features/lib/creater'
+const { existsSync } = require('fs');
 class Service {
   constructor({ cwd, args, buildPaths, useEnvs, mode, pkg, src }) {
     this.cwd = cwd
@@ -20,9 +21,12 @@ class Service {
             dir: this.cwd
           })
         } else {
+          if (!existsSync(this.buildPaths[0])) {
+            signale.fatal(new Error(`错误: ${buildPath} 目录不存在!!`))
+            process.exit(1)
+          }
           await buildLib.call(this)
         }
-
         break;
       case 'lib-react':
         console.log('lib-react');

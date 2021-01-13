@@ -6,12 +6,10 @@ const rimraf = require('rimraf');
 const { Service } = require('./index');
 const { COMMAND_CLIS, ERROR_MESSAGES } = require('./utils/common')
 const { getUseEnvs, getExistFile } = require('./utils/utils');
-
 const cwd = process.cwd()
 
-// rimraf.sync(join(cwd, 'es'));
-// rimraf.sync(join(cwd, 'lib'));
-// rimraf.sync(join(cwd, 'dist'));
+const babelRegister = require('./utils/babel-node-register');
+(babelRegister.default || babelRegister)(cwd)
 
 function formRunType(_args) {
   let type
@@ -49,17 +47,15 @@ if (!type) {
 }
 
 signale.start(`cmtter-lib ${type}....`);
-
+rimraf.sync(join(cwd, 'es'));
+rimraf.sync(join(cwd, 'lib'));
+rimraf.sync(join(cwd, 'dist'));
 (async () => {
   const mode = args.mode || 'dev'
   const src = args.src || 'src'
   const buildPath = join(cwd, src)
   let useEnvs = await getUseEnvs(getExistFile({ cwd, files: [`${mode}-env.js`], returnRelative: false }), { mode, args });
-  const pkg = require(join(cwd, 'package.json'))
-  if (!existsSync(buildPath)) {
-    signale.fatal(new Error(`错误: ${buildPath} 目录不存在!!`))
-    process.exit(1)
-  }
+  const pkg = existsSync(join(cwd, 'package.json')) ? require(join(cwd, 'package.json')) : {}
   const _s = new Service({ cwd, args, buildPaths: [buildPath], useEnvs, mode, pkg: (pkg.default || pkg), src });
   await _s.run(type)
 })()

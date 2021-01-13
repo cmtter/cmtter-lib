@@ -1,6 +1,6 @@
 
 import Mustache from 'mustache'
-import { join } from 'path'
+import { join, parse } from 'path'
 import prompt from 'prompt'
 import pify from 'pify'
 import fs from 'fs'
@@ -25,10 +25,9 @@ async function getUserInput() {
 
 export default async function create({ dir }) {
   const { name } = await getUserInput()
-  const projectPath = join(process.cwd, name)
+  const projectPath = join(process.cwd(), name)
   if (fs.existsSync(projectPath)) {
     signale.warn(`${projectPath}目录已经存在`)
-    create({ dir })
     return
   }
   // 创建目录
@@ -38,11 +37,15 @@ export default async function create({ dir }) {
   const fl1 = await _pglob('**/*.*', { cwd: join(__dirname, 'templates'), realpath: true })
   const fl2 = await _pglob('**/.*', { cwd: join(__dirname, 'templates'), realpath: true })
   const allFiles = [...fl1, ...fl2]
-  console.log(allFiles);
   allFiles.forEach(file => {
     const tplContent = fs.readFileSync(file, 'utf-8');
-    const context = Mustache.render(tplContent, {})
-    //const parse(file)
-    fs.writeFileSync(p + '/_config.js', configJsTplContent, 'utf-8');
+    const content = Mustache.render(tplContent, {})
+    const dest = join(projectPath, file.slice(join(__dirname, 'templates').length))
+    const destSteps = parse(dest)
+    if (!fs.existsSync(destSteps.dir)) {
+      fs.mkdirSync(destSteps.dir)
+    }
+    signale.info('[lib]创建工程文件', dest.substring(0, dest.lastIndexOf('\.')))
+    fs.writeFileSync(dest.substring(0, dest.lastIndexOf('\.')), content, 'utf-8');
   })
 }

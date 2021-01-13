@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "./packages",
+    "baseUrl": "./scripts",
     "strictNullChecks": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
