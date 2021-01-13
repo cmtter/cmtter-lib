@@ -1,13 +1,14 @@
 import buildLib from './features/lib/build-lib'
 import createrLib from './features/lib/creater'
 class Service {
-  constructor({ cwd, args, buildPaths, useEnvs, mode, pkg }) {
+  constructor({ cwd, args, buildPaths, useEnvs, mode, pkg, src }) {
     this.cwd = cwd
     this.args = args
     this.buildPaths = buildPaths
     this.useEnvs = useEnvs
     this.mode = mode
     this.pkg = pkg
+    this.src = src
   }
 
   async run(type) {

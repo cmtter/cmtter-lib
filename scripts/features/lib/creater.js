@@ -1,6 +1,6 @@
 
 import Mustache from 'mustache'
-import path, { join, parse } from 'path'
+import { join } from 'path'
 import prompt from 'prompt'
 import pify from 'pify'
 import fs from 'fs'
@@ -31,7 +31,7 @@ export default async function create({ dir }) {
     create({ dir })
     return
   }
-  创建目录
+  // 创建目录
   fs.mkdirSync(projectPath)
 
   const globSrc = '**/*.tpl'
@@ -42,8 +42,7 @@ export default async function create({ dir }) {
   allFiles.forEach(file => {
     const tplContent = fs.readFileSync(file, 'utf-8');
     const context = Mustache.render(tplContent, {})
-    const parse(file)
-    //
+    //const parse(file)
     fs.writeFileSync(p + '/_config.js', configJsTplContent, 'utf-8');
   })
 }

@@ -1,10 +1,13 @@
 {
-  "name": "cmtter-lib",
+  "name": "cmtter-lib4",
   "version": "1.0.0",
   "description": "前端集成化开发及构建工具",
   "main": "index.js",
   "author": "xiufu.wang",
   "license": "MIT",
+  "scripts": {
+    "build": "node ./build.js lib --target=cjs --src=scripts --autoinstall=false --mode=prod"
+  },
   "bin": {
     "cmtter-lib": "bin/cli.js"
   },
@@ -45,6 +48,7 @@
     "resolve": "^1.19.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.35.1",
+    "rollup-plugin-copy": "^3.3.0",
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-typescript2": "^0.29.0",
     "signale": "^1.4.0",

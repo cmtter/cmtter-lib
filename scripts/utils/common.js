@@ -19,23 +19,6 @@ cmtter-lib doc-react(构建react文档)
 cmtter-lib web-react(构建react 应用)
 cmtter-lib web-vue(构建vue 应用)
 `
-  ),
-
-  ERROR_PROJECT_DIR_CLI: new Error(
-    `
- 项目目录结构错误, 请将你的项目结构定义如下
-   单包场景:
-      src/
-      
-    多包场景
-      packages/
-         m1/
-           src/
-         m2/
-           src/
-         m3/
-           src/
-`
   )
 }
 export {

@@ -105,7 +105,6 @@ dist
 src/
 packages/
 temp/
-lib/
 !scripts/**/lib/
 es/
 dist/
