@@ -1,5 +1,6 @@
 import autoInstall from '@rollup/plugin-auto-install'
 import nodeResolve from '@rollup/plugin-node-resolve'
+import postcss from '../../rollup/rollup-postcss-plugin';
 import commonjs from '@rollup/plugin-commonjs'
 import babel from '@rollup/plugin-babel'
 function getDir(format, input, { src }) {
@@ -18,41 +19,44 @@ function getDir(format, input, { src }) {
   return dirs.join('/')
 }
 
-
 export default function createRollupConfig(format, inputs, options) {
-  const { useEnvs, src } = options
+  const { useEnvs, src, args } = options
 
   return inputs.map(input => {
     return {
       input,
       external: id => {
-        // 入口 必须返回 false
-        if (id === input) {
-          return false
-        }
-        //  用户扩展优先
-        if (useEnvs.rollupExternal && useEnvs.rollupExternal instanceof Function) {
-          const r = useEnvs.rollupExternal(format, input, id)
-          if (r === true || r === false) {
-            return r
-          }
-        }
-        // 如果存在node_modules、或者非umd模式 则 返回true
-        if ((id[0] !== '.') && (/node_modules/.test(require.resolve(id))) || format !== 'umd') {
-          return true
-        }
-        return false
+        // // 入口 必须返回 false
+        // if (id === input) {
+        //   return false
+        // }
+        // //  用户扩展优先
+        // if (useEnvs.rollupExternal && useEnvs.rollupExternal instanceof Function) {
+        //   const r = useEnvs.rollupExternal(format, input, id)
+        //   if (r === true || r === false) {
+        //     return r
+        //   }
+        // }
+        // // 如果存在node_modules、或者非umd模式 则 返回true
+        // // args.scne === 'cmtter-lib' 属于特殊标记参数
+        // if (id[0] !== '\0' && (id[0] !== '.') && (/node_modules/.test(require.resolve(id))) || args.scne === 'cmtter-lib') {
+        //   return true
+        // }
+
+        // return false
       },
       output: {
         format: format,
         dir: getDir(format, input, options),
-        ...(format !== 'umd' ? { preserveModules: null } : {}),
+        ...(format !== 'umd' ? { preserveModules: true } : {}),
         ...(format === 'cjs' ? { exports: 'named' } : {}),
         ...(format === 'umd' ? { name: useEnvs.umdExport, globals: useEnvs.umdGlobals } : {})
       },
       plugins: [
         ...((options.args.autoinstall) ? [autoInstall()] : []),
-        commonjs(),
+        postcss({
+          extract: true
+        }),
         babel({
           presets: [
             /**
@@ -99,6 +103,7 @@ export default function createRollupConfig(format, inputs, options) {
           exclude: /\/node_modules\//,
           babelrc: false
         }),
+        commonjs(),
         nodeResolve({
           mainFields: ['module', 'jsnext:main', 'main'],
           //如果没有指定扩展面，假如./aaaa为./aaaa.jsx 例如在js中引入 import * from './aaaa',那么解析失败
@@ -106,6 +111,7 @@ export default function createRollupConfig(format, inputs, options) {
           // 必须指定解析范围，否则他会将 npm node_module也解析冲 相对路径模式
           resolveOnly: ['/' + src + '/ **/*.*/']
         }),
+
         ...useEnvs.extraRollupPlugins
       ]
     }

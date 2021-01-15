@@ -16,7 +16,7 @@ function formRunType(_args) {
   if (_args._[0] == 'lib' || _args._[0] == 'doc' || _args._[0] == 'web') {
     type = _args._[0]
   }
-  if (_args._[1] == 'react' || _args._[1] === 'vue') {
+  if (_args._[1]) {
     type = `${type}-${_args._[1]}`
   }
   if (COMMAND_CLIS.indexOf(type) < 0) {

@@ -6,7 +6,7 @@
   "author": "xiufu.wang",
   "license": "MIT",
   "scripts": {
-    "build": "node ./build.js lib --target=cjs --src=scripts --autoinstall=false --mode=prod"
+    "build": "node ./build.js lib --target=cjs --src=scripts --autoinstall=false --mode=prod --scne=cmtter-lib"
   },
   "bin": {
     "cmtter-lib": "bin/cli.js"
@@ -38,6 +38,7 @@
     "@umijs/babel-preset-umi": "^3.3.3",
     "babel-plugin-react-require": "^3.1.3",
     "glob": "^7.1.6",
+    "less": "^4.1.0",
     "less-plugin-npm-import": "^2.1.0",
     "lodash": "^4.17.20",
     "mustache": "^4.1.0",
@@ -45,6 +46,7 @@
     "pify": "^5.0.0",
     "postcss": "8.1.14",
     "prompt": "^1.1.0",
+    "react": "^17.0.1",
     "resolve": "^1.19.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.35.1",

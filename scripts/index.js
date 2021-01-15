@@ -1,6 +1,7 @@
 import buildLib from './features/lib/build-lib'
 import createrLib from './features/lib/creater'
 const { existsSync } = require('fs');
+const signale = require('signale')
 class Service {
   constructor({ cwd, args, buildPaths, useEnvs, mode, pkg, src }) {
     this.cwd = cwd
@@ -15,27 +16,28 @@ class Service {
   async run(type) {
     switch (type) {
       case 'lib':
-        // 创建模板
-        if (this.args._[1] === 'create') {
-          await createrLib({
-            dir: this.cwd
-          })
-        } else {
-          if (!existsSync(this.buildPaths[0])) {
-            signale.fatal(new Error(`错误: ${buildPath} 目录不存在!!`))
-            process.exit(1)
-          }
-          await buildLib.call(this)
+        if (!existsSync(this.buildPaths[0])) {
+          signale.fatal(new Error(`错误: ${this.buildPaths[0]} 目录不存在!!`))
+          process.exit(1)
         }
+        await buildLib.call(this)
         break;
-      case 'lib-react':
-        console.log('lib-react');
+      case 'lib-create':
+        await createrLib({ dir: this.cwd })
         break;
-      case 'lib-vue':
-        console.log('lib-vue');
+      case 'doc':
+
+        break;
+      case 'doc-deploy':
+        console.log('doc-deploy');
+        break;
+      case 'web':
+        console.log('web');
+        break;
+      case 'web-build':
+        console.log('web-build');
         break;
       default:
-        console.log('default');
         break;
     }
   }
