@@ -29,7 +29,8 @@
     "src": "./scripts",
     "files": [
       "scripts/**/*.{md,markdown,mdx}"
-    ]
+    ],
+    "dest": "/docs"
   },
   "entries": [
     {
