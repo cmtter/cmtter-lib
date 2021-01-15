@@ -30,7 +30,8 @@
     "files": [
       "scripts/**/*.{md,markdown,mdx}"
     ],
-    "dest": "/docs"
+    "dest": "/docs",
+    "base": "/docs"
   },
   "entries": [
     {

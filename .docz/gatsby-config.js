@@ -16,7 +16,7 @@ if (hasGatsbyConfig) {
 }
 
 const config = {
-  pathPrefix: '/',
+  pathPrefix: '/docs',
 
   siteMetadata: {
     title: 'cmtter-lib doc',
@@ -54,7 +54,7 @@ const config = {
         port: 8888,
         p: 8888,
         root: 'D:\\cmtter-lib-master\\.docz',
-        base: '/',
+        base: '/docs',
         source: './',
         'gatsby-root': null,
         files: ['scripts/**/*.{md,markdown,mdx}'],
