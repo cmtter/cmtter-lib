@@ -1,7 +1,7 @@
 /**
  * 可用命令
  */
-const COMMAND_CLIS = ['lib', 'lib-create', 'doc', 'doc-deploy', 'web', 'web-build']
+const COMMAND_CLIS = ['lib', 'lib-create', 'doc', 'doc-deploy', 'doc-build', 'web', 'web-build']
 
 /**
  * 错误信息

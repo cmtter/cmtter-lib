@@ -1,6 +1,9 @@
 import buildLib from './features/lib/build-lib'
 import createrLib from './features/lib/creater'
+import buildDoc from './features/doc/index'
 const { existsSync } = require('fs');
+const { join } = require('path');
+const rimraf = require('rimraf');
 const signale = require('signale')
 class Service {
   constructor({ cwd, args, buildPaths, useEnvs, mode, pkg, src }) {
@@ -16,6 +19,9 @@ class Service {
   async run(type) {
     switch (type) {
       case 'lib':
+        rimraf.sync(join(this.cwd, 'es'));
+        rimraf.sync(join(this.cwd, 'lib'));
+        rimraf.sync(join(this.cwd, 'dist'));
         if (!existsSync(this.buildPaths[0])) {
           signale.fatal(new Error(`错误: ${this.buildPaths[0]} 目录不存在!!`))
           process.exit(1)
@@ -26,7 +32,10 @@ class Service {
         await createrLib({ dir: this.cwd })
         break;
       case 'doc':
-
+        await buildDoc.call(this)
+        break;
+      case 'doc-build':
+        await buildDoc.call(this)
         break;
       case 'doc-deploy':
         console.log('doc-deploy');

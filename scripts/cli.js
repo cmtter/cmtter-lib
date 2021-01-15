@@ -2,7 +2,6 @@ const yParser = require('yargs-parser');
 const { existsSync } = require('fs');
 const signale = require('signale');
 const { join, sep } = require('path');
-const rimraf = require('rimraf');
 const { Service } = require('./index');
 const { COMMAND_CLIS, ERROR_MESSAGES } = require('./utils/common')
 const { getUseEnvs, getExistFile } = require('./utils/utils');
@@ -47,9 +46,6 @@ if (!type) {
 }
 
 signale.start(`cmtter-lib ${type}....`);
-rimraf.sync(join(cwd, 'es'));
-rimraf.sync(join(cwd, 'lib'));
-rimraf.sync(join(cwd, 'dist'));
 (async () => {
   const mode = args.mode || 'dev'
   const src = args.src || 'src'

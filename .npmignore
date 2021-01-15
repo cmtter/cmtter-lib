@@ -108,3 +108,4 @@ temp/
 !scripts/**/lib/
 es/
 dist/
+.docz
