@@ -31,7 +31,7 @@
       "scripts/**/*.{md,markdown,mdx}"
     ],
     "dest": "/docs",
-    "base": "/docs"
+    "base": "/cmtter-lib"
   },
   "entries": [
     {
