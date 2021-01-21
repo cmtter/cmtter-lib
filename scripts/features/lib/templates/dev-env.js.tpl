@@ -3,8 +3,8 @@ const cwd = process.cwd()
 export default () => {
   return {
     doc: {
-      src: './',
-      files: ['src**/*.{md,markdown,mdx}']
+      src: './src',
+      files: ['src/**/*.{md,markdown,mdx}']
     }
   }
 }

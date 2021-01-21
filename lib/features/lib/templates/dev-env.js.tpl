@@ -4,7 +4,7 @@ export default () => {
   return {
     doc: {
       src: './src',
-      files: ['src**/*.{md,markdown,mdx}']
+      files: ['src/**/*.{md,markdown,mdx}']
     }
   }
 }
