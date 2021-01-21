@@ -1,3 +1,4 @@
+const path = require('path')
 export default function (args) {
   return {
     /**
@@ -28,6 +29,30 @@ export default function (args) {
     /**
      * 静态资源配置，构建时会自动将这些静态资源copy到指定目录
      */
-    assertGlobs: null
+    assertGlobs: null,
+
+    doc: {},
+    gatsby: {
+      onCreateWebpackConfig(args) {
+        // const cwd = process.cwd()
+        // args.actions.setWebpackConfig({
+        //   resolve: {
+        //     modules: [path.join(__dirname, '../node_modules'), path.join(cwd, 'node_modules'), 'node_modules'],
+        //     alias: {
+        //       '@@@': path.resolve(cwd, 'src/'),
+        //     },
+        //   },
+        // })
+      },
+      onCreateBabelConfig({ actions }) {
+        actions.setBabelPreset({
+          name: `@babel/preset-react`
+        })
+        actions.setBabelPlugin({
+          name: `@babel/plugin-syntax-jsx`,
+          options: {}
+        })
+      }
+    }
   }
 }

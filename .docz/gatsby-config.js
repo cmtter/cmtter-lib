@@ -50,7 +50,7 @@ const config = {
         o: null,
         open: null,
         'open-browser': null,
-        config: 'D:\\cmtter-lib-master\\scripts\\features\\doc\\doczrc.js',
+        config: './docz/doczrc.js',
         port: 8888,
         p: 8888,
         root: 'D:\\cmtter-lib-master\\.docz',

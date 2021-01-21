@@ -1,6 +1,6 @@
-const { existsSync } = require('fs');
-const { join } = require('path');
-const { merge } = require('lodash');
+import { existsSync } from 'fs';
+import { join } from 'path';
+import { merge } from 'lodash';
 const cwd = process.cwd()
 function testDefault(mod) {
   return mod.default || mod

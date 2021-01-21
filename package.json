@@ -1,14 +1,14 @@
 {
   "name": "cmtter-lib",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "前端集成化开发及构建工具",
-  "main": "index.js",
+  "main": "lib/index.js",
   "author": "xiufu.wang",
   "license": "MIT",
   "scripts": {
     "build": "node ./build.js lib --target=cjs --src=scripts --autoinstall=false --mode=prod --scne=cmtter-lib",
-    "doc": "node ./build.js doc --src=scripts",
-    "doc:build": "node ./build.js doc build --src=scripts"
+    "doc": "node ./build.js doc --src=scripts  --mode=prod",
+    "doc:build": "node ./build.js doc build --src=scripts --mode=prod"
   },
   "bin": {
     "cmtter-lib": "bin/cli.js"

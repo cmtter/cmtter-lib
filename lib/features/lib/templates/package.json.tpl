@@ -6,6 +6,11 @@
   "author": "xiufu.wang",
   "license": "MIT",
   "dependencies": {
-    "@babel/runtime": "^7.12.5"
+    "cmtter-lib": "^1.0.0"
+  },
+ "scripts": {
+    "build": "cmtter-lib lib",
+    "doc": "cmtter-lib doc",
+    "doc:build": "cmtter-lib doc build"
   }
 }

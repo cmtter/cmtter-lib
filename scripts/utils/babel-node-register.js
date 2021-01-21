@@ -4,6 +4,9 @@ module.exports = function (rootPath) {
     ignore: [/node_modules/],
     only: [
       function (filePath) {
+        if (!rootPath) {
+          return true
+        }
         return filePath.startsWith(rootPath)
       }
     ],

@@ -1,5 +1,10 @@
-export default function (args) {
+const { join } = require('path')
+const cwd = process.cwd()
+export default () => {
   return {
-    
+    doc: {
+      src: './',
+      files: ['src**/*.{md,markdown,mdx}']
+    }
   }
 }

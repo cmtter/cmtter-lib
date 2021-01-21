@@ -2,12 +2,14 @@
 import Mustache from 'mustache'
 import { join, parse } from 'path'
 import prompt from 'prompt'
+import { exec } from 'child_process';
 import pify from 'pify'
 import fs from 'fs'
 import glob from 'glob'
 const signale = require('signale');
 
 const _pglob = pify(glob)
+const execAsync = pify(exec)
 
 async function getUserInput() {
   const { name } = await prompt.get({
@@ -48,4 +50,10 @@ export default async function create({ dir }) {
     signale.info('[lib]创建工程文件', dest.substring(0, dest.lastIndexOf('\.')))
     fs.writeFileSync(dest.substring(0, dest.lastIndexOf('\.')), content, 'utf-8');
   })
+
+  // 安装
+  signale.info('安装依赖......')
+  const installLog = await execAsync(`cd ${projectPath} && yarn install`)
+  signale.info(installLog)
+  signale.info('安装完成......')
 }

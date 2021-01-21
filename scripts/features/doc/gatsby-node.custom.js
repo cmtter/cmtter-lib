@@ -1,11 +1,10 @@
-const { existsSync } = require('fs');
-const { join } = require('path');
-const { merge } = require('lodash');
+import { existsSync } from 'fs';
+import { join } from 'path';
+import { merge } from 'lodash';
 const cwd = process.cwd()
 function testDefault(mod) {
   return mod.default || mod
 }
-
 function registerBabel() {
   testDefault(require(join(process.env.CMTTER_CLI_CWD, 'lib/utils/babel-node-register.js')))();
 }
@@ -21,11 +20,15 @@ function getUseConfig() {
 
 registerBabel()
 const useConfig = getUseConfig()
-const config = merge({
-  src: '/' + (process.env.SRC_PATH || 'src'),
-  files: ['/' + (process.env.SRC_PATH || 'src') + '/**/*.{md,markdown,mdx}'],
-  title: 'cmtter-lib doc',
-  dest: '/docs'
-}, (useConfig.doc || {}))
 
-export default config
+exports.onCreateWebpackConfig = args => {
+  if (useConfig.gatsby && useConfig.gatsby.onCreateWebpackConfig) {
+    useConfig.gatsby.onCreateWebpackConfig(args)
+  }
+}
+
+exports.onCreateBabelConfig = (args) => {
+  if (useConfig.gatsby && useConfig.gatsby.onCreateBabelConfig) {
+    useConfig.gatsby.onCreateBabelConfig(args)
+  }
+}
